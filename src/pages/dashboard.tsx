@@ -7,18 +7,24 @@ import {
 import { useGetAllParcelsQuery } from "@/redux/services/parcel.service";
 import { IUserParcel, setParcels } from "@/redux/slices/auth.slice";
 import { RootState, useAppDispatch, useAppSelector } from "@/redux/store";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Button } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
+const headers: any[] = [
+  { id: "name", label: "Parcel Name" },
+  { id: "pickup", label: "Pick-up Address" },
+  { id: "dropoff", label: "Drop-off Address" },
+  { id: "action", label: "" },
+];
+
 function User() {
-  const user = useAppSelector((state: RootState) => state?.auth?.user);
+  const { user, parcels } = useAppSelector((state: RootState) => state?.auth);
   const { data } = useGetAllParcelsQuery({} as unknown as void, {
     refetchOnMountOrArgChange: true,
   });
   const dispatch = useAppDispatch();
-  const parcels = user?.parcels;
   const isParcelsEmpty = !parcels || parcels.length === 0;
   const [selectedParcel, setSelectedParcel] = useState<
     IUserParcel | undefined
@@ -65,15 +71,28 @@ function User() {
       );
     }
 
-    return (
-      <DataTable
-        rows={parcels}
-        onRowActionClicked={(row) => {
-          setSelectedParcel(row);
-          setDrawerOpen(true);
-        }}
-      />
-    );
+    const rows = parcels.map((parcel) => {
+      return {
+        name: parcel.name,
+        pickup: parcel.pickup.address,
+        dropoff: parcel.dropoff.address,
+        id: parcel.id,
+        action: (
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setSelectedParcel(parcel);
+              setDrawerOpen(true);
+            }}
+          >
+            Pick it up
+          </Button>
+        ),
+      };
+    });
+
+    return <DataTable rows={rows} headers={headers} />;
   };
 
   return (

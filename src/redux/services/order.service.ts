@@ -40,8 +40,20 @@ export const orderApi = createApi({
       }),
       invalidatesTags: [{ type: "Orders", id: "LIST" }],
     }),
+    updateOrder: builder.mutation({
+      query: (orderForm: { status: string; id: string }) => ({
+        url: `orders/${orderForm.id}`,
+        method: "PATCH",
+        body: JSON.stringify(orderForm),
+      }),
+      invalidatesTags: [{ type: "Orders", id: "LIST" }],
+    }),
   }),
 });
 
-export const { useCreateOrderMutation, useGetAllOrdersQuery } = orderApi;
-export const {} = orderApi.endpoints;
+export const {
+  useCreateOrderMutation,
+  useGetAllOrdersQuery,
+  useUpdateOrderMutation,
+} = orderApi;
+export const { getAllOrders } = orderApi.endpoints;

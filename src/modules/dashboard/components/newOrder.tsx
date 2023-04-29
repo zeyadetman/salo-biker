@@ -73,7 +73,7 @@ export const NewOrder = ({
     };
 
     try {
-      const { data, error } = (await createOrder(order)) as any;
+      const { error } = (await createOrder(order)) as any;
       if (error) {
         enqueueSnackbar(error?.data?.message || "Something went Wrong!", {
           variant: "error",

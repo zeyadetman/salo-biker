@@ -7,50 +7,61 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
 } from "@mui/material";
-import { IUserParcel } from "@/redux/slices/auth.slice";
 
 export const DataTable = ({
   rows,
-  onRowActionClicked,
+  headers,
 }: {
-  rows: IUserParcel[];
-  onRowActionClicked: (row: IUserParcel) => void;
+  rows: any[];
+  headers: { id: string; label: string }[];
 }) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} size="medium" aria-label="Parcels">
         <TableHead>
           <TableRow>
-            <TableCell>Parcel Name</TableCell>
-            <TableCell align="center">Pick-up Address</TableCell>
-            <TableCell align="center">Drop-off Adress</TableCell>
-            <TableCell align="right"></TableCell>
+            {headers.map((header, index) => (
+              <TableCell
+                key={header.id}
+                align={index === 0 ? "left" : "center"}
+              >
+                {header.label}
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row: any, rowIndex: number) => (
             <TableRow
               key={row.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="center">{row.pickup?.address}</TableCell>
-              <TableCell align="center">{row.dropoff?.address}</TableCell>
-              <TableCell align="center">
-                <Button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onRowActionClicked(row);
-                  }}
-                >
-                  Pick it up
-                </Button>
-              </TableCell>
+              {headers.map((header, index) => {
+                const record = row?.[header?.id as any];
+
+                if (index === 0) {
+                  return (
+                    <TableCell component="th" scope="row" key={record}>
+                      {record || ""}
+                    </TableCell>
+                  );
+                }
+
+                if (header.id === "action") {
+                  return (
+                    <TableCell align="center" key={row.id}>
+                      {row.action}
+                    </TableCell>
+                  );
+                }
+
+                return (
+                  <TableCell align="center" key={record}>
+                    {record || ""}
+                  </TableCell>
+                );
+              })}
             </TableRow>
           ))}
         </TableBody>

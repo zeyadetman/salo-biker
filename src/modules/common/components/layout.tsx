@@ -68,7 +68,7 @@ export const Layout = (props: Props) => {
         >
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Parcels
+              {router.asPath === "/dashboard" ? "Parcels" : "My Orders"}
             </Typography>
 
             <div>
@@ -123,9 +123,20 @@ export const Layout = (props: Props) => {
               setValue(newValue);
             }}
           >
-            <BottomNavigationAction label="Parcels" icon={<InventoryIcon />} />
-            <BottomNavigationAction label="My Orders" icon={<FavoriteIcon />} />
-            <BottomNavigationAction label="Logout" icon={<LocationOnIcon />} />
+            <BottomNavigationAction
+              label="Parcels"
+              icon={<InventoryIcon />}
+              onClick={() => {
+                router.push("/dashboard");
+              }}
+            />
+            <BottomNavigationAction
+              label="My Orders"
+              onClick={() => {
+                router.push("/orders");
+              }}
+              icon={<FavoriteIcon />}
+            />
           </BottomNavigation>
         </Paper>
       </>
