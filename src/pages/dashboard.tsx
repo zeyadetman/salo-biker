@@ -2,15 +2,14 @@ import { DataTable } from "@/modules/common";
 import {
   DashboardContainerStyled,
   EmptyParcelsContainerStyled,
-  ParcelsListContainerStyled,
 } from "@/modules/dashboard";
 import { useGetAllParcelsQuery } from "@/redux/services/parcel.sercice";
-import { logout, setParcels } from "@/redux/slices/auth.slice";
+import { setParcels } from "@/redux/slices/auth.slice";
 import { RootState, useAppDispatch, useAppSelector } from "@/redux/store";
-import { Button, Typography, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 function User() {
   const user = useAppSelector((state: RootState) => state?.auth?.user);
@@ -18,26 +17,8 @@ function User() {
     refetchOnMountOrArgChange: true,
   });
   const dispatch = useAppDispatch();
-  const handleLogout = () => {
-    dispatch(logout());
-  };
   const parcels = user?.parcels;
   const isParcelsEmpty = !parcels || parcels.length === 0;
-
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event &&
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-
-      setDrawerOpen(open);
-    };
 
   useEffect(() => {
     console.log("data", { data });
@@ -66,7 +47,14 @@ function User() {
       );
     }
 
-    return <DataTable rows={parcels} headers={["id", "name"]} />;
+    return (
+      <DataTable
+        rows={parcels}
+        onRowActionClicked={(row) => {
+          console.log(row.id);
+        }}
+      />
+    );
   };
 
   return (
@@ -79,16 +67,9 @@ function User() {
       </Head>
 
       <DashboardContainerStyled>
-        <Typography variant="h3">Hi {user?.name},</Typography>
+        <Typography variant="h2">Hi {user?.name},</Typography>
 
-        <Box>
-          <ParcelsListContainerStyled>
-            <Typography variant="h4">All Parcels</Typography>
-          </ParcelsListContainerStyled>
-
-          {renderParcels()}
-        </Box>
-        <Button onClick={handleLogout}>Logout</Button>
+        <Box>{renderParcels()}</Box>
       </DashboardContainerStyled>
     </>
   );

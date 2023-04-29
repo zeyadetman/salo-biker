@@ -26,7 +26,12 @@ export const DashboardContainerStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 2rem;
+  gap: 1rem;
+  padding-bottom: 3rem;
+
+  & .MuiTypography-h2 {
+    font-size: 1.5rem;
+  }
 `;
 
 export const ParcelsListContainerStyled = styled(Box)`

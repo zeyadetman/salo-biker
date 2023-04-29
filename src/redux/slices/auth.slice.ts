@@ -6,9 +6,16 @@ export enum userType {
   BIKER = "BIKER",
 }
 
+export interface IAddress {
+  address: string;
+  id: string;
+}
+
 export interface IUserParcel {
   id: string;
   name: string;
+  pickup: IAddress;
+  dropoff: IAddress;
 }
 
 export interface User {

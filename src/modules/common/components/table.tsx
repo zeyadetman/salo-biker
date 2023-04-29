@@ -7,23 +7,26 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
 } from "@mui/material";
+import { IUserParcel } from "@/redux/slices/auth.slice";
 
 export const DataTable = ({
   rows,
-  headers,
+  onRowActionClicked,
 }: {
-  rows: any[];
-  headers: string[];
+  rows: IUserParcel[];
+  onRowActionClicked: (row: IUserParcel) => void;
 }) => {
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <Table sx={{ minWidth: 650 }} size="medium" aria-label="Parcels">
         <TableHead>
           <TableRow>
-            <TableCell>Parcel ID</TableCell>
-            <TableCell align="right">Name</TableCell>
-            <TableCell align="right">Status</TableCell>
+            <TableCell>Parcel Name</TableCell>
+            <TableCell align="center">Pick-up Address</TableCell>
+            <TableCell align="center">Drop-off Adress</TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -33,10 +36,21 @@ export const DataTable = ({
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.id}
+                {row.name}
               </TableCell>
-              <TableCell align="right">{row.name}</TableCell>
-              <TableCell align="right">{row.status}</TableCell>
+              <TableCell align="center">{row.pickup?.address}</TableCell>
+              <TableCell align="center">{row.dropoff?.address}</TableCell>
+              <TableCell align="center">
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onRowActionClicked(row);
+                  }}
+                >
+                  Pick it up
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
