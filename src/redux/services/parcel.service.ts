@@ -1,12 +1,10 @@
-import { ILoginForm, IRegisterationForm } from "@/modules/auth";
-import { IUserParcel, userType } from "@/redux/slices/auth.slice";
 import { RootState } from "@/redux/store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const parcelApi = createApi({
   reducerPath: "parcelApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/",
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || "",
     headers: {
       "Content-Type": "application/json",
     },
@@ -37,3 +35,4 @@ export const parcelApi = createApi({
 });
 
 export const { useGetAllParcelsQuery } = parcelApi;
+export const { getAllParcels } = parcelApi.endpoints;

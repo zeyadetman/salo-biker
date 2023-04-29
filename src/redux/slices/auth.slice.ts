@@ -52,7 +52,9 @@ const slice = createSlice({
     },
     setParcels: (
       state,
-      { payload: { parcels } }: PayloadAction<{ parcels: IUserParcel[] }>
+      {
+        payload: { parcels },
+      }: PayloadAction<{ parcels: (IUserParcel | any)[] }>
     ) => {
       state!.parcels = parcels;
     },

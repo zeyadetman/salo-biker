@@ -11,7 +11,9 @@ import {
   Button,
   Dialog,
   DialogActions,
+  DialogContent,
   DialogTitle,
+  LinearProgress,
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
@@ -34,7 +36,8 @@ const headers = [
 
 function Orders() {
   const [open, setOpen] = useState(false);
-  const [updateOrder] = useUpdateOrderMutation();
+  const [updateOrder, { isLoading: isUpdatingOrder }] =
+    useUpdateOrderMutation();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClickOpen = () => {
@@ -47,10 +50,14 @@ function Orders() {
 
   const handleClickDelivered = async () => {
     try {
-      await updateOrder({
+      const { error } = await updateOrder({
         id: selectedOrder?.id,
         status: OrderStatus.DROPPED_OFF,
-      });
+      }).unwrap();
+
+      if (error) {
+        throw error;
+      }
 
       enqueueSnackbar("Order updated successfully", { variant: "success" });
       handleClose();
@@ -126,6 +133,7 @@ function Orders() {
         <DialogTitle id="alert-dialog-title">
           {`Are you sure that you've delivered "${selectedOrder?.parcel?.name}"?`}
         </DialogTitle>
+        <DialogContent>{isUpdatingOrder && <LinearProgress />}</DialogContent>
         <DialogActions>
           <Button onClick={handleClose} variant="outlined">
             Cancel

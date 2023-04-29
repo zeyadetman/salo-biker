@@ -19,6 +19,13 @@ const headers: any[] = [
   { id: "action", label: "" },
 ];
 
+export enum EVENTS_TYPES {
+  PARCEL_CREATED = "parcelCreation",
+  PARCEL_UPDATED = "parcelUpdate",
+  ORDER_CREATED = "orderCreation",
+  ORDER_UPDATED = "orderUpdate",
+}
+
 function User() {
   const { user, parcels } = useAppSelector((state: RootState) => state?.auth);
   const { data } = useGetAllParcelsQuery({} as unknown as void, {

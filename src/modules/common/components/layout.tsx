@@ -1,5 +1,5 @@
 import { LayoutStyled } from "@/modules/common/styles";
-import { logout, userType } from "@/redux/slices/auth.slice";
+import { logout, setParcels, userType } from "@/redux/slices/auth.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import {
   AppBar,
@@ -19,6 +19,10 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { AccountCircle } from "@mui/icons-material";
+import { io } from "socket.io-client";
+import { useSnackbar } from "notistack";
+import { EVENTS_TYPES } from "@/pages/dashboard";
+import { getAllParcels } from "@/redux/services/parcel.service";
 
 interface Props {
   children: React.ReactNode;
@@ -27,9 +31,11 @@ interface Props {
 export const Layout = (props: Props) => {
   const { children } = props;
   const [value, setValue] = React.useState(0);
+  const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const { accessToken, user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const [getAllParcelsQuery] = getAllParcels.useLazyQuery();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
@@ -37,6 +43,55 @@ export const Layout = (props: Props) => {
       router.push("/");
     }
   }, [accessToken, user?.type]);
+
+  useEffect(() => {
+    const updateParcels = async () => {
+      try {
+        const { data: parcelsData, error } = await getAllParcelsQuery();
+        if (error) throw error;
+        dispatch(setParcels({ parcels: parcelsData || [] }));
+      } catch (error: any) {
+        enqueueSnackbar(
+          error.message || error?.data?.message || "Something went wrong!",
+          {
+            variant: "error",
+          }
+        );
+      }
+    };
+    const socket = io(process.env.NEXT_PUBLIC_API_URL || "", {
+      withCredentials: true,
+      transports: ["websocket", "polling"],
+      autoConnect: false,
+      extraHeaders: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    socket.connect();
+    socket.on(EVENTS_TYPES.PARCEL_CREATED, async (data: any) => {
+      enqueueSnackbar(`New Parcel Created! ${data.name}`, {
+        variant: "info",
+      });
+
+      updateParcels();
+    });
+
+    socket.on(EVENTS_TYPES.ORDER_CREATED, async (data: any) => {
+      enqueueSnackbar(
+        `Order with parcel: ${data?.parcelId} has been picked up!`,
+        {
+          variant: "info",
+        }
+      );
+
+      updateParcels();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
