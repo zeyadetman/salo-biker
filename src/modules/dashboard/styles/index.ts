@@ -1,6 +1,6 @@
 import { Box, styled } from "@mui/material";
 
-export const EmptyParcelsContainerStyled = styled(Box)`
+export const EmptyOrdersContainerStyled = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,19 +34,26 @@ export const DashboardContainerStyled = styled(Box)`
   }
 `;
 
-export const ParcelsListContainerStyled = styled(Box)`
+export const OrdersListContainerStyled = styled(Box)`
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
   gap: 1rem;
 `;
 
-export const ParcelFormStyled = styled(Box)`
-  padding: 32px;
+export const OrderFormStyled = styled(Box)`
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 90vh;
   gap: 2rem;
+
+  & .header {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 `;

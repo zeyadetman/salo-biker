@@ -5,7 +5,8 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import authReducer from "@/redux/slices/auth.slice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
-import { parcelApi } from "@/redux/services/parcel.sercice";
+import { parcelApi } from "@/redux/services/parcel.service";
+import { orderApi } from "@/redux/services/order.service";
 
 const persistConfig = {
   key: "root",
@@ -17,6 +18,7 @@ const reducers = combineReducers({
   auth: authReducer,
   [authApi.reducerPath]: authApi.reducer,
   [parcelApi.reducerPath]: parcelApi.reducer,
+  [orderApi.reducerPath]: orderApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -26,7 +28,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat([authApi.middleware, parcelApi.middleware]),
+    }).concat([authApi.middleware, parcelApi.middleware, orderApi.middleware]),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

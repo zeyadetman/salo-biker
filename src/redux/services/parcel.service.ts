@@ -1,6 +1,5 @@
 import { ILoginForm, IRegisterationForm } from "@/modules/auth";
-import { IParcel } from "@/modules/dashboard";
-import { userType } from "@/redux/slices/auth.slice";
+import { IUserParcel, userType } from "@/redux/slices/auth.slice";
 import { RootState } from "@/redux/store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -34,16 +33,7 @@ export const parcelApi = createApi({
             ]
           : [{ type: "Parcels", id: "LIST" }],
     }),
-    createParcel: builder.mutation({
-      query: (parcelForm: IParcel) => ({
-        url: `parcels`,
-        method: "POST",
-        body: JSON.stringify(parcelForm),
-      }),
-      invalidatesTags: [{ type: "Parcels", id: "LIST" }],
-    }),
   }),
 });
 
-export const { useCreateParcelMutation, useGetAllParcelsQuery } = parcelApi;
-export const {} = parcelApi.endpoints;
+export const { useGetAllParcelsQuery } = parcelApi;

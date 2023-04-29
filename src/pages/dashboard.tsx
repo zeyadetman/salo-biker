@@ -1,15 +1,16 @@
-import { DataTable } from "@/modules/common";
+import { ActionDrawer, DataTable } from "@/modules/common";
 import {
   DashboardContainerStyled,
-  EmptyParcelsContainerStyled,
+  EmptyOrdersContainerStyled,
+  NewOrder,
 } from "@/modules/dashboard";
-import { useGetAllParcelsQuery } from "@/redux/services/parcel.sercice";
-import { setParcels } from "@/redux/slices/auth.slice";
+import { useGetAllParcelsQuery } from "@/redux/services/parcel.service";
+import { IUserParcel, setParcels } from "@/redux/slices/auth.slice";
 import { RootState, useAppDispatch, useAppSelector } from "@/redux/store";
 import { Typography, Box } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 function User() {
   const user = useAppSelector((state: RootState) => state?.auth?.user);
@@ -19,9 +20,26 @@ function User() {
   const dispatch = useAppDispatch();
   const parcels = user?.parcels;
   const isParcelsEmpty = !parcels || parcels.length === 0;
+  const [selectedParcel, setSelectedParcel] = useState<
+    IUserParcel | undefined
+  >();
+
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === "keydown" &&
+        ((event as React.KeyboardEvent).key === "Tab" ||
+          (event as React.KeyboardEvent).key === "Shift")
+      ) {
+        return;
+      }
+
+      setDrawerOpen(open);
+    };
 
   useEffect(() => {
-    console.log("data", { data });
     if (data) {
       dispatch(setParcels({ parcels: [...(data || [])] }));
     }
@@ -31,7 +49,7 @@ function User() {
   const renderParcels = () => {
     if (isParcelsEmpty) {
       return (
-        <EmptyParcelsContainerStyled>
+        <EmptyOrdersContainerStyled>
           <Image
             src="/assets/empty-parcels.svg"
             alt="Empty"
@@ -43,7 +61,7 @@ function User() {
               No parcels to pick up. Please wait for new parcels!
             </Typography>
           </Box>
-        </EmptyParcelsContainerStyled>
+        </EmptyOrdersContainerStyled>
       );
     }
 
@@ -51,7 +69,8 @@ function User() {
       <DataTable
         rows={parcels}
         onRowActionClicked={(row) => {
-          console.log(row.id);
+          setSelectedParcel(row);
+          setDrawerOpen(true);
         }}
       />
     );
@@ -71,6 +90,10 @@ function User() {
 
         <Box>{renderParcels()}</Box>
       </DashboardContainerStyled>
+
+      <ActionDrawer open={isDrawerOpen} toggleDrawer={toggleDrawer}>
+        <NewOrder parcel={selectedParcel} handleClose={toggleDrawer(false)} />
+      </ActionDrawer>
     </>
   );
 }

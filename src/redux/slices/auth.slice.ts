@@ -45,7 +45,7 @@ const slice = createSlice({
       state.user = user;
     },
     logout: (state) => {
-      state.user = null;
+      state.user = {} as User;
       state.accessToken = null;
     },
     setParcels: (

@@ -65,7 +65,7 @@ export const LoginForm = () => {
         });
       }
     } catch (err) {
-      enqueueSnackbar((err as any).data.message || "Something went Wrong!", {
+      enqueueSnackbar((err as any)?.data?.message || "Something went Wrong!", {
         variant: "error",
       });
     }
