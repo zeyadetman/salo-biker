@@ -22,7 +22,7 @@ enum ModalTypes {
 export default function Home() {
   const [modalType, selectModalType] = useState<ModalTypes | null>(null);
   const router = useRouter();
-  const { accessToken, user } = useAppSelector((state) => state.auth);
+  const { accessToken, user } = useAppSelector((state) => state?.auth);
 
   const handleTrySaloForFree = () => {
     selectModalType(ModalTypes.REGISTER);

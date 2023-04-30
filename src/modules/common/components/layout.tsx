@@ -42,6 +42,7 @@ export const Layout = (props: Props) => {
     if (!accessToken || user?.type !== userType.BIKER) {
       router.push("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken, user?.type]);
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export const Layout = (props: Props) => {
     return () => {
       socket.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = () => {
