@@ -50,7 +50,7 @@ export const LoginForm = () => {
     try {
       const accessToken: { accessToken: string } = await login(values).unwrap();
       dispatch(setToken(accessToken));
-      const user: any = await getMeInfo().unwrap();
+      const user: any = await getMeInfo();
       if (user?.error) {
         throw user.error;
       }

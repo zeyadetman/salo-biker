@@ -39,7 +39,7 @@ export const Register = ({
 
   const handleRegister = async (values: IRegisterationForm) => {
     try {
-      const { error } = await register(values).unwrap();
+      const { error } = (await register(values)) as any;
       if (error) {
         throw error;
       }

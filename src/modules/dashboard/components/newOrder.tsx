@@ -73,7 +73,7 @@ export const NewOrder = ({
     };
 
     try {
-      const { error } = await createOrder(order).unwrap();
+      const { error } = (await createOrder(order)) as any;
       if (error) {
         throw error;
       }
