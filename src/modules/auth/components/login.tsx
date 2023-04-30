@@ -50,7 +50,10 @@ export const LoginForm = () => {
     try {
       const accessToken: { accessToken: string } = await login(values).unwrap();
       dispatch(setToken(accessToken));
-      const user: any = await getMeInfo();
+      const user: any = await getMeInfo().unwrap();
+      if (user?.error) {
+        throw user.error;
+      }
       const isUserSender = user.data?.type === userType.BIKER;
       if (isUserSender) {
         dispatch(setUser({ user: user.data }));
@@ -64,10 +67,13 @@ export const LoginForm = () => {
           variant: "error",
         });
       }
-    } catch (err) {
-      enqueueSnackbar((err as any)?.data?.message || "Something went Wrong!", {
-        variant: "error",
-      });
+    } catch (err: any) {
+      enqueueSnackbar(
+        err?.message || err?.data?.message || "Something went Wrong!",
+        {
+          variant: "error",
+        }
+      );
     }
   };
 

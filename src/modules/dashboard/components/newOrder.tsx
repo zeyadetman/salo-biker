@@ -73,17 +73,13 @@ export const NewOrder = ({
     };
 
     try {
-      const { error } = (await createOrder(order)) as any;
+      const { error } = await createOrder(order).unwrap();
       if (error) {
-        enqueueSnackbar(error?.data?.message || "Something went Wrong!", {
-          variant: "error",
-        });
+        throw error;
       }
-    } catch (err) {
+    } catch (err: any) {
       enqueueSnackbar(
-        (err as any)?.data?.message ||
-          (err as any)?.message ||
-          "Something went Wrong!",
+        err?.message || err?.data?.message || "Something went Wrong!",
         {
           variant: "error",
         }
