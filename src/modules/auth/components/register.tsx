@@ -39,7 +39,10 @@ export const Register = ({
 
   const handleRegister = async (values: IRegisterationForm) => {
     try {
-      register(values);
+      const { error } = await register(values).unwrap();
+      if (error) {
+        throw error;
+      }
     } catch (err) {
       enqueueSnackbar((err as any)?.data?.message || "Something went Wrong!", {
         variant: "error",
